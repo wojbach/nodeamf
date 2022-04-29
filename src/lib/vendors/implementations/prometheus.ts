@@ -5,8 +5,8 @@ import { SupportedVendorsEnum } from '../supported-vendors.enum';
 import { VendorInterface } from '../vendor.interface';
 
 export class Prometheus implements VendorInterface {
-  readonly name: SupportedVendorsEnum = SupportedVendorsEnum.Prometheus;
-  readonly supportedMetrics: MetricsTypesEnum[] = [
+  private readonly name: SupportedVendorsEnum = SupportedVendorsEnum.Prometheus;
+  private readonly supportedMetrics: MetricsTypesEnum[] = [
     MetricsTypesEnum.Counter,
     MetricsTypesEnum.Gauge,
     MetricsTypesEnum.Histogram,
@@ -17,6 +17,14 @@ export class Prometheus implements VendorInterface {
 
   constructor() {
     this.client = promClient;
+  }
+
+  getName(): SupportedVendorsEnum {
+    return this.name;
+  }
+
+  getSupportedMetrics(): MetricsTypesEnum[] {
+    return this.supportedMetrics;
   }
 
   getClient(): typeof promClient {

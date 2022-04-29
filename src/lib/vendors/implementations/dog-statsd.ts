@@ -7,8 +7,8 @@ import { VendorInterface } from '../vendor.interface';
 type DogStatsdConfigOptions = ClientOptions;
 
 export class DogStatsd implements VendorInterface {
-  readonly name: SupportedVendorsEnum = SupportedVendorsEnum.DogStatsD;
-  readonly supportedMetrics: MetricsTypesEnum[] = [
+  private readonly name: SupportedVendorsEnum = SupportedVendorsEnum.DogStatsD;
+  private readonly supportedMetrics: MetricsTypesEnum[] = [
     MetricsTypesEnum.Counter,
     MetricsTypesEnum.Gauge,
     MetricsTypesEnum.Histogram,
@@ -23,6 +23,14 @@ export class DogStatsd implements VendorInterface {
 
   constructor(config?: DogStatsdConfigOptions) {
     this.client = new StatsD(config);
+  }
+
+  getName(): SupportedVendorsEnum {
+    return this.name;
+  }
+
+  getSupportedMetrics(): MetricsTypesEnum[] {
+    return this.supportedMetrics;
   }
 
   getClient(): StatsD {

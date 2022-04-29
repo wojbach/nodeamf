@@ -1,5 +1,5 @@
 export enum SupportedVendorsEnum {
-  Prometheus,
-  DogStatsD,
-  Atlas,
+  Prometheus = 'prometheus',
+  DogStatsD = 'dogStatsD',
+  Atlas = 'atlas',
 }

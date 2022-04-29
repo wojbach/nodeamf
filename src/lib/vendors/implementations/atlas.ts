@@ -27,8 +27,8 @@ type Logger = {
 };
 
 export class Atlas implements VendorInterface {
-  readonly name: SupportedVendorsEnum = SupportedVendorsEnum.Atlas;
-  readonly supportedMetrics: MetricsTypesEnum[] = [
+  private readonly name: SupportedVendorsEnum = SupportedVendorsEnum.Atlas;
+  private readonly supportedMetrics: MetricsTypesEnum[] = [
     MetricsTypesEnum.Counter,
     MetricsTypesEnum.Gauge,
     MetricsTypesEnum.Summary,
@@ -42,6 +42,14 @@ export class Atlas implements VendorInterface {
     this.client.start();
   }
 
+  getName(): SupportedVendorsEnum {
+    return this.name;
+  }
+
+  getSupportedMetrics(): MetricsTypesEnum[] {
+    return this.supportedMetrics;
+  }
+
   callMetric(metricName: string, method: string, args: any[]) {
     const metric = this.metricsRegistry.get(metricName);
     if (!metric) {
@@ -52,7 +60,7 @@ export class Atlas implements VendorInterface {
     const meterId = this.getOrCreateMeterId(metricName, metric, tags);
 
     const { specMethod, specArgs } =
-      this.mapUnifiedMetricMethodToVendorsSpecific(metricName, method, args);
+      this.mapUnifiedMetricMethodToVendorsSpecific(method, args);
 
     this.client[MetricsTypesEnum[metric.type].toLowerCase()](meterId)[
       specMethod
@@ -83,7 +91,6 @@ export class Atlas implements VendorInterface {
   }
 
   private mapUnifiedMetricMethodToVendorsSpecific(
-    metricName: string,
     method: string,
     args: unknown[]
   ): { specMethod: string; specArgs: unknown[] } {

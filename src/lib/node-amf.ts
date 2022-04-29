@@ -25,11 +25,15 @@ export class NodeAmf {
     return nodeAmf;
   }
 
-  getMetric<T = Counter | Gauge | Histogram | Summary>(name: string): T {
+  getMetric<T = Counter | Gauge | Histogram | Summary>(
+    name: string
+  ): T | undefined {
     return this.metricsRegistry.get(name) as unknown as T;
   }
 
-  getVendor<T = Prometheus | DogStatsd>(name: SupportedVendorsEnum): T {
+  getVendor<T = Prometheus | DogStatsd>(
+    name: SupportedVendorsEnum
+  ): T | undefined {
     return this.vendorsRegistry.get(name) as unknown as T;
   }
 
@@ -37,32 +41,37 @@ export class NodeAmf {
     if (!vendor) {
       return;
     }
-    this.vendorsRegistry.set(vendor.name, vendor);
+    this.vendorsRegistry.set(vendor.getName(), vendor);
   }
 
   private addMetric(metric: MetricInterface): void {
-    if (!metric) {
-      return;
-    }
     const vendorsRegistry = this.vendorsRegistry;
     const metricProxy = new Proxy(metric, {
       get: function (target, prop) {
         return typeof target[prop] !== 'function'
           ? target[prop]
           : function (...args) {
-              metric.registerInVendors.forEach((supportedVendor) => {
+              metric.getVendorsRegistry().forEach((supportedVendor) => {
                 const vendorInRegistry = vendorsRegistry.get(supportedVendor);
-                vendorInRegistry.callMetric(target.name, String(prop), args);
+                vendorInRegistry.callMetric(
+                  target.getName(),
+                  String(prop),
+                  args
+                );
               });
             };
       },
     });
 
-    this.metricsRegistry.set(metric.name, metricProxy);
+    this.metricsRegistry.set(metric.getName(), metricProxy);
 
-    metric.registerInVendors.forEach((supportedVendor) => {
+    metric.getVendorsRegistry().forEach((supportedVendor) => {
       const vendorInRegistry = this.vendorsRegistry.get(supportedVendor);
-      vendorInRegistry.registerMetric(metric.name, metric.type, metric.options);
+      vendorInRegistry.registerMetric(
+        metric.getName(),
+        metric.getType(),
+        metric.getOptions()
+      );
     });
   }
 }
