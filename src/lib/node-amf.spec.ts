@@ -9,7 +9,7 @@ import { NodeAmf } from './node-amf';
 import { SupportedVendorsEnum } from './vendors/supported-vendors.enum';
 import { VendorInterface } from './vendors/vendor.interface';
 
-type TestContextType = {
+type TestContext = {
   vendor1: StubbedInstance<VendorInterface>;
   vendor2: StubbedInstance<VendorInterface>;
   metric1: StubbedInstance<Counter>;
@@ -42,11 +42,11 @@ beforeEach((t) => {
   t.context = { vendor1, vendor2, metric1, metric2 };
 });
 
-test('object properly initiates with empty vendor and metrics array', (t: ExecutionContext<TestContextType>) => {
+test('object properly initiates with empty vendor and metrics array', (t: ExecutionContext<TestContext>) => {
   t.notThrows(() => NodeAmf.init({ vendors: [], metrics: [] }));
 });
 
-test('object properly initiates with vendors array only', (t: ExecutionContext<TestContextType>) => {
+test('object properly initiates with vendors array only', (t: ExecutionContext<TestContext>) => {
   const { vendor1, vendor2 } = t.context;
   t.notThrows(() =>
     NodeAmf.init({
@@ -56,7 +56,7 @@ test('object properly initiates with vendors array only', (t: ExecutionContext<T
   );
 });
 
-test('object properly initiates with metrics array only', (t: ExecutionContext<TestContextType>) => {
+test('object properly initiates with metrics array only', (t: ExecutionContext<TestContext>) => {
   const { metric1, metric2 } = t.context;
   t.notThrows(() =>
     NodeAmf.init({
@@ -66,7 +66,7 @@ test('object properly initiates with metrics array only', (t: ExecutionContext<T
   );
 });
 
-test('object vendors registry finds existing entry also returns undefined on not found entry', (t: ExecutionContext<TestContextType>) => {
+test('object vendors registry finds existing entry also returns undefined on not found entry', (t: ExecutionContext<TestContext>) => {
   const { vendor1 } = t.context;
   const nodeamf = NodeAmf.init({ vendors: [vendor1], metrics: [] });
   t.notDeepEqual(
@@ -76,7 +76,7 @@ test('object vendors registry finds existing entry also returns undefined on not
   t.deepEqual(nodeamf.getVendor('vendor2' as SupportedVendorsEnum), undefined);
 });
 
-test('object metrics registry finds existing entry also returns undefined on not found entry', (t: ExecutionContext<TestContextType>) => {
+test('object metrics registry finds existing entry also returns undefined on not found entry', (t: ExecutionContext<TestContext>) => {
   const { metric1 } = t.context;
   const nodeamf = NodeAmf.init({ vendors: [], metrics: [metric1] });
   t.notDeepEqual(
@@ -86,14 +86,14 @@ test('object metrics registry finds existing entry also returns undefined on not
   t.deepEqual(nodeamf.getMetric('metric2' as SupportedVendorsEnum), undefined);
 });
 
-test('object properly initiates with vendors and metrics', (t: ExecutionContext<TestContextType>) => {
+test('object properly initiates with vendors and metrics', (t: ExecutionContext<TestContext>) => {
   const { vendor1, vendor2, metric1, metric2 } = t.context;
   t.notThrows(() =>
     NodeAmf.init({ vendors: [vendor1, vendor2], metrics: [metric1, metric2] })
   );
 });
 
-test('object properly initiates and metrics are registered in vendors', (t: ExecutionContext<TestContextType>) => {
+test('object properly initiates and metrics are registered in vendors', (t: ExecutionContext<TestContext>) => {
   const { vendor1, vendor2 } = t.context;
   const metricWithVendorsRegistry1 = sinon.stubInterface<MetricInterface>({
     getName: 'metric1',
@@ -131,7 +131,7 @@ test('object properly initiates and metrics are registered in vendors', (t: Exec
   );
 });
 
-test("metric measure method calls vendor's callMetric method", (t: ExecutionContext<TestContextType>) => {
+test("metric measure method calls vendor's callMetric method", (t: ExecutionContext<TestContext>) => {
   const { vendor1, vendor2, metric1 } = t.context;
   const metricWithVendorsRegistry1 = sinon.stubInterface<MetricInterface>({
     getName: 'metric1',
@@ -155,7 +155,7 @@ test("metric measure method calls vendor's callMetric method", (t: ExecutionCont
   t.assert(metric1.increment.notCalled);
 });
 
-test('metric non-measure method or property does not call vendor\'s callMetric method ', (t: ExecutionContext<TestContextType>) => {
+test("metric non-measure method or property does not call vendor's callMetric method ", (t: ExecutionContext<TestContext>) => {
   const { vendor1 } = t.context;
   const metricWithVendorsRegistry1 = sinon.stubInterface<
     MetricInterface & { someProp }

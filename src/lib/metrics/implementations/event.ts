@@ -4,7 +4,8 @@ import { MetricAbstract } from '../metric.abstract';
 import { MetricInterface } from '../metric.interface';
 import { MetricsTypesEnum } from '../metrics-types.enum';
 
-export type EventOptions = Record<string, never>;
+export type EventOptions = Record<string, any>;
+export type EventSendOptions = SendOptions;
 
 export class Event
   extends MetricAbstract<EventOptions>
@@ -19,7 +20,7 @@ export class Event
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     description?: string,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    options?: SendOptions,
+    options?: EventSendOptions,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     tags?: string[]
     // eslint-disable-next-line @typescript-eslint/no-empty-function

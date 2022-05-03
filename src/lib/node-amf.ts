@@ -1,7 +1,10 @@
 import { Counter } from './metrics/implementations/counter';
+import { Event } from './metrics/implementations/event';
 import { Gauge } from './metrics/implementations/gauge';
 import { Histogram } from './metrics/implementations/histogram';
+import { Set } from './metrics/implementations/set';
 import { Summary } from './metrics/implementations/summary';
+import { Timer } from './metrics/implementations/timer';
 import { MetricInterface } from './metrics/metric.interface';
 import { DogStatsd } from './vendors/implementations/dog-statsd';
 import { Prometheus } from './vendors/implementations/prometheus';
@@ -25,7 +28,7 @@ export class NodeAmf {
     return nodeAmf;
   }
 
-  getMetric<T = Counter | Gauge | Histogram | Summary>(
+  getMetric<T = Counter | Event | Gauge | Histogram | Set | Summary | Timer>(
     name: string
   ): T | undefined {
     return this.metricsRegistry.get(name) as unknown as T;

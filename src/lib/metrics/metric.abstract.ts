@@ -1,14 +1,12 @@
 import { SupportedVendorsEnum } from '../vendors/supported-vendors.enum';
-import { VendorInterface } from '../vendors/vendor.interface';
 
 import { MetricsTypesEnum } from './metrics-types.enum';
 
 export abstract class MetricAbstract<T extends Record<string, unknown>> {
-  readonly name: string;
-  readonly type: MetricsTypesEnum;
-  readonly options: T;
-  readonly registerInVendors: SupportedVendorsEnum[] = [];
-  registeredInVendors: VendorInterface[] = [];
+  protected readonly name: string;
+  protected readonly type: MetricsTypesEnum;
+  protected readonly options: T;
+  protected readonly registerInVendors: SupportedVendorsEnum[] = [];
 
   constructor(
     name: string,

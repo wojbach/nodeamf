@@ -4,6 +4,9 @@ import { MetricsTypesEnum } from '../metrics-types.enum';
 
 export type SummaryOptions = {
   tags?: string[];
+  /**
+   * Only for prometheus
+   */
   percentiles?: number[];
 };
 
@@ -14,5 +17,5 @@ export class Summary
   readonly type: MetricsTypesEnum = MetricsTypesEnum.Summary;
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function,@typescript-eslint/no-unused-vars
-  observe(value?: number, tags?: string[]): void {}
+  observe(value?: number, tags?: { [tagName: string]: string }): void {}
 }
