@@ -38,20 +38,19 @@ export class NodeAmf {
   }
 
   private addVendor(vendor: VendorInterface): void {
-    if (!vendor) {
-      return;
-    }
     this.vendorsRegistry.set(vendor.getName(), vendor);
   }
 
   private addMetric(metric: MetricInterface): void {
     const vendorsRegistry = this.vendorsRegistry;
+    const measureFunctions = ['increment', 'send', 'set', 'observe', 'record'];
     const metricProxy = new Proxy(metric, {
       get: function (target, prop) {
-        return typeof target[prop] !== 'function'
+        return typeof target[prop] !== 'function' ||
+          !measureFunctions.includes(String(prop))
           ? target[prop]
           : function (...args) {
-              metric.getVendorsRegistry().forEach((supportedVendor) => {
+              target.getVendorsRegistry().forEach((supportedVendor) => {
                 const vendorInRegistry = vendorsRegistry.get(supportedVendor);
                 vendorInRegistry.callMetric(
                   target.getName(),
