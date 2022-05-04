@@ -37,7 +37,7 @@ export class Atlas implements VendorInterface {
   private readonly client: Registry;
   private metricsRegistry: Map<string, RegisteredMetric> = new Map();
 
-  constructor(config?: AtlasConfigOptions) {
+  constructor(config?: Partial<AtlasConfigOptions>) {
     this.client = new Registry(config);
     this.client.start();
   }
@@ -62,9 +62,12 @@ export class Atlas implements VendorInterface {
     const { specMethod, specArgs } =
       this.mapUnifiedMetricMethodToVendorsSpecific(method, args);
 
-    this.client[MetricsTypesEnum[metric.type].toLowerCase()](meterId)[
-      specMethod
-    ](...specArgs);
+    const specMetric =
+      MetricsTypesEnum[metric.type] !== 'Summary'
+        ? MetricsTypesEnum[metric.type].toLowerCase()
+        : 'distributionSummary';
+
+    this.client[specMetric](meterId)[specMethod](...specArgs);
   }
 
   getClient() {
