@@ -8,6 +8,7 @@ import { VendorInterface } from '../vendor.interface';
 type RegisteredMetric = {
   type: MetricsTypesEnum;
   metricsIds: Map<string, MeterId>;
+  options: Record<string, unknown>;
 };
 
 type AtlasConfigOptions = {
@@ -74,7 +75,11 @@ export class Atlas implements VendorInterface {
     return this.client;
   }
 
-  registerMetric(metricName: string, metricType: MetricsTypesEnum) {
+  registerMetric(
+    metricName: string,
+    metricType: MetricsTypesEnum,
+    options: Record<string, unknown>
+  ) {
     if (!this.supportedMetrics.includes(metricType)) {
       throw new Error(
         'Unsupported metric type: ' + MetricsTypesEnum[metricType]
@@ -90,6 +95,7 @@ export class Atlas implements VendorInterface {
     this.metricsRegistry.set(metricName, {
       type: metricType,
       metricsIds: new Map(),
+      options,
     });
   }
 

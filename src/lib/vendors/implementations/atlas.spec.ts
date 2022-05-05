@@ -50,7 +50,7 @@ test('properly registers metric of supported type', (t) => {
     uri: 'http://test-uri',
   });
 
-  vendor.registerMetric('metric1', MetricsTypesEnum.Gauge);
+  vendor.registerMetric('metric1', MetricsTypesEnum.Gauge, {});
   t.truthy((vendor as any).metricsRegistry.has('metric1'));
 });
 
@@ -61,7 +61,11 @@ test('throws while registering unsupported metrics types', (t) => {
   });
   const nonExistingMetricEnum = 1337;
   t.throws(() => {
-    vendor.registerMetric('metric1', nonExistingMetricEnum as MetricsTypesEnum);
+    vendor.registerMetric(
+      'metric1',
+      nonExistingMetricEnum as MetricsTypesEnum,
+      {}
+    );
   });
 });
 
@@ -72,8 +76,8 @@ test('throws while registering metric with the same name', (t) => {
   });
 
   t.throws(() => {
-    vendor.registerMetric('metric1', MetricsTypesEnum.Counter);
-    vendor.registerMetric('metric1', MetricsTypesEnum.Counter);
+    vendor.registerMetric('metric1', MetricsTypesEnum.Counter, {});
+    vendor.registerMetric('metric1', MetricsTypesEnum.Counter, {});
   });
 });
 
@@ -94,7 +98,7 @@ test('throws when calling unsupported method', (t) => {
     uri: 'http://test-uri',
   });
 
-  vendor.registerMetric('metric1', MetricsTypesEnum.Counter);
+  vendor.registerMetric('metric1', MetricsTypesEnum.Counter, {});
   t.throws(() => {
     vendor.callMetric('metric1', 'nonExistingMethod', []);
   });
@@ -105,7 +109,7 @@ test('calling counter metric invokes underlying client properly', (t) => {
     uri: 'http://test-uri',
   });
 
-  vendor.registerMetric('counter', MetricsTypesEnum.Counter);
+  vendor.registerMetric('counter', MetricsTypesEnum.Counter, {});
   vendor.callMetric('counter', 'increment', [1, { tag1: 1, tag2: 'foo' }]);
 
   const meters = vendor.getClient().meters();
@@ -123,7 +127,7 @@ test('calling gauge metric invokes underlying client properly', (t) => {
     uri: 'http://test-uri',
   });
 
-  vendor.registerMetric('gauge', MetricsTypesEnum.Gauge);
+  vendor.registerMetric('gauge', MetricsTypesEnum.Gauge, {});
   vendor.callMetric('gauge', 'set', [10, { tag1: 1, tag2: 'foo' }]);
 
   const meters = vendor.getClient().meters();
@@ -141,7 +145,7 @@ test('calling summary metric invokes underlying client properly', (t) => {
     uri: 'http://test-uri',
   });
 
-  vendor.registerMetric('summary', MetricsTypesEnum.Summary);
+  vendor.registerMetric('summary', MetricsTypesEnum.Summary, {});
   vendor.callMetric('summary', 'observe', [20, { tag1: 1, tag2: 'foo' }]);
   vendor.callMetric('summary', 'observe', [40, { tag1: 1, tag2: 'foo' }]);
 
@@ -163,7 +167,7 @@ test('calling timer metric invokes underlying client properly', (t) => {
     uri: 'http://test-uri',
   });
 
-  vendor.registerMetric('timer', MetricsTypesEnum.Timer);
+  vendor.registerMetric('timer', MetricsTypesEnum.Timer, {});
   vendor.callMetric('timer', 'record', [30, { tag1: 1, tag2: 'foo' }]);
 
   const meters = vendor.getClient().meters();
