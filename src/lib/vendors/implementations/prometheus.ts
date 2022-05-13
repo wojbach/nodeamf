@@ -1,4 +1,10 @@
-import promClient from 'prom-client';
+import promClient, {
+  Counter,
+  Gauge,
+  Histogram,
+  Metric,
+  Summary,
+} from 'prom-client';
 
 import { MetricsTypesEnum } from '../../metrics/metrics-types.enum';
 import { SupportedVendorsEnum } from '../supported-vendors.enum';
@@ -13,10 +19,11 @@ export class Prometheus implements VendorInterface {
     MetricsTypesEnum.Summary,
   ];
   private readonly client: typeof promClient;
-  private metricsRegistry: Map<string, unknown> = new Map();
+  private metricsRegistry: Map<string, Metric<string>> = new Map();
 
   constructor() {
     this.client = promClient;
+    this.client.register.clear();
   }
 
   getName(): SupportedVendorsEnum {
@@ -79,28 +86,28 @@ export class Prometheus implements VendorInterface {
     const { tags, ...otherOptions } = options;
     switch (metricType) {
       case MetricsTypesEnum.Counter:
-        return new this.client.Counter({
+        return new Counter({
           help: metricName,
           name: metricName,
           labelNames,
           ...otherOptions,
         });
       case MetricsTypesEnum.Gauge:
-        return new this.client.Gauge({
+        return new Gauge({
           help: metricName,
           name: metricName,
           labelNames,
           ...otherOptions,
         });
       case MetricsTypesEnum.Histogram:
-        return new this.client.Histogram({
+        return new Histogram({
           help: metricName,
           name: metricName,
           labelNames,
           ...otherOptions,
         });
       case MetricsTypesEnum.Summary:
-        return new this.client.Summary({
+        return new Summary({
           help: metricName,
           name: metricName,
           labelNames,
