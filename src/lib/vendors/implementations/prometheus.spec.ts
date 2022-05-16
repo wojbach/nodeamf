@@ -177,3 +177,67 @@ test('calling summary metric invokes underlying client properly', (t) => {
   t.deepEqual(registeredMetricSpy.labelNames, ['tag1', 'tag2']);
   t.deepEqual(registeredMetricSpy.percentiles, [0.5, 0.9, 0.99]);
 });
+
+test('metric names ARE modified if their names are invalid from default naming strategy perspective', (t) => {
+  const invalidMetricsNames = {
+    camelCase: 'camel_case',
+    'special-@#$%^-chars': 'special_chars',
+    'space seperated': 'space_seperated',
+    'mixed - type_of-metricName ': 'mixed_type_of_metric_name',
+  };
+
+  const vendor = new Prometheus();
+  for (const [invalidMetricName, validMetricName] of Object.entries(
+    invalidMetricsNames
+  )) {
+    vendor.registerMetric(invalidMetricName, MetricsTypesEnum.Counter, {});
+    const registeredMetric = (vendor as any).metricsRegistry.get(
+      invalidMetricName
+    );
+    t.is(registeredMetric.name, validMetricName);
+  }
+});
+
+test('metric names ARE NOT modified if their names are valid from default naming strategy perspective', (t) => {
+  const validMetricsNames = [
+    'lorem_ipsum',
+    'sit_dolor_amet',
+    'consectetur_adipiscing:elit',
+    'consectetur_adipiscing:elit:sed:at',
+  ];
+
+  const vendor = new Prometheus();
+  for (const validMetricName of validMetricsNames) {
+    vendor.registerMetric(validMetricName, MetricsTypesEnum.Counter, {});
+    const registeredMetric = (vendor as any).metricsRegistry.get(
+      validMetricName
+    );
+    t.is(registeredMetric.name, validMetricName);
+  }
+});
+
+test('metric names ARE modified according to the custom naming strategy', (t) => {
+  const invalidMetricsNames = {
+    FOO: 'oof',
+    baR: 'rab',
+  };
+
+  const vendor = new Prometheus();
+  vendor.setMetricNamingConvention((metricName) =>
+    metricName
+      .split('')
+      .map((v) => v.toLowerCase())
+      .reverse()
+      .join('')
+  );
+
+  for (const [givenMetricName, expectedMetricName] of Object.entries(
+    invalidMetricsNames
+  )) {
+    vendor.registerMetric(givenMetricName, MetricsTypesEnum.Counter, {});
+    const registeredMetric = (vendor as any).metricsRegistry.get(
+      givenMetricName
+    );
+    t.is(registeredMetric.name, expectedMetricName);
+  }
+});

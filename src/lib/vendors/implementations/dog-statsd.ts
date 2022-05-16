@@ -16,6 +16,13 @@ export class DogStatsd implements VendorInterface {
     MetricsTypesEnum.Event,
   ];
   private readonly client: StatsD;
+  private metricNamingConvention = (metricName: string) =>
+    metricName
+      .replace(/[A-Z]+/g, (match) => `.${match.toLowerCase()}`)
+      .match(
+        /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g
+      )
+      .join('.');
   private metricsRegistry: Map<
     string,
     { metricType: MetricsTypesEnum; options: Record<string, unknown> }
@@ -37,6 +44,10 @@ export class DogStatsd implements VendorInterface {
     return this.client;
   }
 
+  setMetricNamingConvention(convertFunction: (metricName: string) => string) {
+    this.metricNamingConvention = convertFunction;
+  }
+
   callMetric(metricName: string, method: string, args: unknown[]) {
     const metric = this.metricsRegistry.get(metricName);
     if (!metric) {
@@ -45,7 +56,7 @@ export class DogStatsd implements VendorInterface {
 
     const { specMethod, specArgs } =
       this.mapUnifiedMetricMethodToVendorsSpecific(
-        metricName,
+        this.metricNamingConvention(metricName),
         metric,
         method,
         args

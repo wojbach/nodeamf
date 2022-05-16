@@ -165,3 +165,67 @@ test('calling event metric invokes underlying client properly', (t) => {
 
   t.assert(mockBuffer[0] === '_e{5,5}:event|title|#alert_type:info');
 });
+
+test('metric names ARE modified if their names are invalid from default naming strategy perspective', (t) => {
+  const invalidMetricsNames = {
+    camelCase: 'camel.case',
+    'special-@#$%^-chars': 'special.chars',
+    'space seperated': 'space.seperated',
+    'mixed - type_of-metricName ': 'mixed.type.of.metric.name',
+  };
+
+  const vendor = new DogStatsd({ mock: true });
+  for (const [invalidMetricName, validMetricName] of Object.entries(
+    invalidMetricsNames
+  )) {
+    vendor.registerMetric(invalidMetricName, MetricsTypesEnum.Counter, {});
+    vendor.callMetric(invalidMetricName, 'increment', []);
+
+    const mockBuffer = vendor.getClient().mockBuffer;
+    t.truthy(mockBuffer.find((v) => v.indexOf(validMetricName) === 0));
+  }
+});
+
+test('metric names ARE NOT modified if their names are valid from default naming strategy perspective', (t) => {
+  const validMetricsNames = [
+    'lorem.ipsum',
+    'sit.dolor.amet',
+    'consectetur.adipiscing.elit',
+    'consectetur.adipiscing.elit.sed.at1337',
+  ];
+
+  const vendor = new DogStatsd({ mock: true });
+  for (const validMetricName of validMetricsNames) {
+    vendor.registerMetric(validMetricName, MetricsTypesEnum.Counter, {});
+    vendor.callMetric(validMetricName, 'increment', []);
+
+    const mockBuffer = vendor.getClient().mockBuffer;
+    t.truthy(mockBuffer.find((v) => v.indexOf(validMetricName) === 0));
+  }
+});
+
+test('metric names ARE modified according to the custom naming strategy', (t) => {
+  const metricsNames = {
+    FOO: 'oof',
+    baR: 'rab',
+  };
+
+  const vendor = new DogStatsd({ mock: true });
+  vendor.setMetricNamingConvention((metricName) =>
+    metricName
+      .split('')
+      .map((v) => v.toLowerCase())
+      .reverse()
+      .join('')
+  );
+
+  for (const [givenMetricName, expectedMetricName] of Object.entries(
+    metricsNames
+  )) {
+    vendor.registerMetric(givenMetricName, MetricsTypesEnum.Counter, {});
+    vendor.callMetric(givenMetricName, 'increment', []);
+
+    const mockBuffer = vendor.getClient().mockBuffer;
+    t.truthy(mockBuffer.find((v) => v.indexOf(expectedMetricName) === 0));
+  }
+});

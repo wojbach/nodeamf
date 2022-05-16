@@ -36,6 +36,10 @@ export class Atlas implements VendorInterface {
     MetricsTypesEnum.Timer,
   ];
   private readonly client: Registry;
+  private metricNamingConvention = (metricName: string) =>
+    metricName
+      .toLowerCase()
+      .replace(/[^a-zA-Z0-9]+(.)/g, (v) => v.toUpperCase());
   private metricsRegistry: Map<string, RegisteredMetric> = new Map();
 
   constructor(config?: Partial<AtlasConfigOptions>) {
@@ -51,6 +55,14 @@ export class Atlas implements VendorInterface {
     return this.supportedMetrics;
   }
 
+  getClient() {
+    return this.client;
+  }
+
+  setMetricNamingConvention(convertFunction: (metricName: string) => string) {
+    this.metricNamingConvention = convertFunction;
+  }
+
   callMetric(metricName: string, method: string, args: any[]) {
     const metric = this.metricsRegistry.get(metricName);
     if (!metric) {
@@ -58,7 +70,11 @@ export class Atlas implements VendorInterface {
     }
 
     const tags = args[1] ? args[1] : {};
-    const meterId = this.getOrCreateMeterId(metricName, metric, tags);
+    const meterId = this.getOrCreateMeterId(
+      this.metricNamingConvention(metricName),
+      metric,
+      tags
+    );
 
     const { specMethod, specArgs } =
       this.mapUnifiedMetricMethodToVendorsSpecific(method, args);
@@ -69,10 +85,6 @@ export class Atlas implements VendorInterface {
         : 'distributionSummary';
 
     this.client[specMetric](meterId)[specMethod](...specArgs);
-  }
-
-  getClient() {
-    return this.client;
   }
 
   registerMetric(

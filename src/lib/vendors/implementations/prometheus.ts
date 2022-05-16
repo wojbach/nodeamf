@@ -19,6 +19,11 @@ export class Prometheus implements VendorInterface {
     MetricsTypesEnum.Summary,
   ];
   private readonly client: typeof promClient;
+  private metricNamingConvention = (metricName: string) =>
+    metricName
+      .trim()
+      .replace(/[A-Z]+/g, (match) => `_${match.toLowerCase()}`)
+      .replace(/[^a-zA-Z0-9:_]+/g, `_`);
   private metricsRegistry: Map<string, Metric<string>> = new Map();
 
   constructor() {
@@ -36,6 +41,10 @@ export class Prometheus implements VendorInterface {
 
   getClient(): typeof promClient {
     return this.client;
+  }
+
+  setMetricNamingConvention(convertFunction: (metricName: string) => string) {
+    this.metricNamingConvention = convertFunction;
   }
 
   callMetric(metricName: string, method: string, args: unknown[]) {
@@ -68,7 +77,7 @@ export class Prometheus implements VendorInterface {
     }
 
     const metricObject = this.constructMetricObjectByType(
-      metricName,
+      this.metricNamingConvention(metricName),
       metricType,
       options
     );

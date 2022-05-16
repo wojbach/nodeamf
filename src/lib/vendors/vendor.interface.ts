@@ -9,6 +9,8 @@ export interface VendorInterface {
 
   getClient();
 
+  setMetricNamingConvention(convertFunction: (metricName: string) => string);
+
   callMetric(metricName: string, method: string, args: unknown[]);
 
   registerMetric(
