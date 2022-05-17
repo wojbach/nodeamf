@@ -180,3 +180,76 @@ test('calling timer metric invokes underlying client properly', (t) => {
     new Map(Object.entries({ tag1: 1, tag2: 'foo' }))
   );
 });
+
+test('metric names ARE modified if their names are invalid from default naming strategy perspective', (t) => {
+  const invalidMetricsNames = {
+    'camel.case': 'camelCase',
+    'special-@#$%^-chars': 'specialChars',
+    'space seperated': 'spaceSeperated',
+    'mixed - type_of-metricName ': 'mixedTypeOfMetricName',
+  };
+
+  const vendor = new Atlas({
+    uri: 'http://test-uri',
+  });
+
+  for (const [invalidMetricName, validMetricName] of Object.entries(
+    invalidMetricsNames
+  )) {
+    vendor.registerMetric(invalidMetricName, MetricsTypesEnum.Counter, {});
+    vendor.callMetric(invalidMetricName, 'increment', []);
+
+    const meters = vendor.getClient().meters();
+    t.truthy(meters.find((v: Counter) => v['id'].name === validMetricName));
+  }
+});
+
+test('metric names ARE NOT modified if their names are valid from default naming strategy perspective', (t) => {
+  const validMetricsNames = [
+    'loremIpsum',
+    'sitDolorAmet',
+    'consecteturAdipiscingElit',
+    'consecteturAdipiscingElitSedAt1337',
+  ];
+
+  const vendor = new Atlas({
+    uri: 'http://test-uri',
+  });
+
+  for (const validMetricName of validMetricsNames) {
+    vendor.registerMetric(validMetricName, MetricsTypesEnum.Counter, {});
+    vendor.callMetric(validMetricName, 'increment', []);
+
+    const meters = vendor.getClient().meters();
+    t.truthy(meters.find((v: Counter) => v['id'].name === validMetricName));
+  }
+});
+
+test('metric names ARE modified according to the custom naming strategy', (t) => {
+  const metricsNames = {
+    FOO: 'oof',
+    baR: 'rab',
+  };
+
+  const vendor = new Atlas({
+    uri: 'http://test-uri',
+  });
+
+  vendor.setMetricNamingConvention((metricName) =>
+    metricName
+      .split('')
+      .map((v) => v.toLowerCase())
+      .reverse()
+      .join('')
+  );
+
+  for (const [givenMetricName, expectedMetricName] of Object.entries(
+    metricsNames
+  )) {
+    vendor.registerMetric(givenMetricName, MetricsTypesEnum.Counter, {});
+    vendor.callMetric(givenMetricName, 'increment', []);
+
+    const meters = vendor.getClient().meters();
+    t.truthy(meters.find((v: Counter) => v['id'].name === expectedMetricName));
+  }
+});

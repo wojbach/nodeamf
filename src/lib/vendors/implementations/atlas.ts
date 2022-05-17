@@ -36,10 +36,13 @@ export class Atlas implements VendorInterface {
     MetricsTypesEnum.Timer,
   ];
   private readonly client: Registry;
-  private metricNamingConvention = (metricName: string) =>
-    metricName
-      .toLowerCase()
-      .replace(/[^a-zA-Z0-9]+(.)/g, (v) => v.toUpperCase());
+  private metricNamingConvention = (metricName: string) => {
+    metricName = metricName.charAt(0).toLowerCase() + metricName.slice(1);
+    return metricName
+      .trim()
+      .split(/[.\-_\s]|[^\w]/g)
+      .reduce((v, w) => v + (w ? w[0].toUpperCase() + w.slice(1) : ''));
+  };
   private metricsRegistry: Map<string, RegisteredMetric> = new Map();
 
   constructor(config?: Partial<AtlasConfigOptions>) {
