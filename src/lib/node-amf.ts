@@ -6,6 +6,7 @@ import { Set } from './metrics/implementations/set';
 import { Summary } from './metrics/implementations/summary';
 import { Timer } from './metrics/implementations/timer';
 import { MetricInterface } from './metrics/metric.interface';
+import { Atlas } from './vendors/implementations/atlas';
 import { DogStatsd } from './vendors/implementations/dog-statsd';
 import { Prometheus } from './vendors/implementations/prometheus';
 import { SupportedVendorsEnum } from './vendors/supported-vendors.enum';
@@ -34,7 +35,7 @@ export class NodeAmf {
     return this.metricsRegistry.get(name) as unknown as T;
   }
 
-  getVendor<T = Prometheus | DogStatsd>(
+  getVendor<T = Prometheus | DogStatsd | Atlas>(
     name: SupportedVendorsEnum
   ): T | undefined {
     return this.vendorsRegistry.get(name) as unknown as T;
