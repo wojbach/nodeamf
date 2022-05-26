@@ -91,6 +91,11 @@
       "!build/module/**"
     ]
   },
+  "standard-version": {
+    "skip": {
+      "changelog": true
+    }
+  },
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
