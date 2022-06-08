@@ -1,7 +1,7 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "parserOptions": { "project": "./tsconfig.json" },
+  "parserOptions": { "project": "./tsconfig.eslint.json" },
   "env": { "es6": true },
   "ignorePatterns": ["node_modules", "build", "coverage", "examples"],
   "plugins": ["import", "eslint-comments"],
@@ -10,7 +10,7 @@
     "plugin:eslint-comments/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:import/typescript",
-        "prettier",
+    "prettier",
     "prettier/@typescript-eslint"
   ],
   "globals": { "BigInt": true, "console": true, "WebAssembly": true },
