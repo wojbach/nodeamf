@@ -1,6 +1,6 @@
 {
   "name": "nodeamf",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Node.js Applicatiom Metrics Facade",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
@@ -90,11 +90,6 @@
     "files": [
       "!build/module/**"
     ]
-  },
-  "standard-version": {
-    "skip": {
-      "changelog": true
-    }
   },
   "config": {
     "commitizen": {
