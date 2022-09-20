@@ -4,9 +4,8 @@ import { Gauge } from './metrics/implementations/gauge';
 import { Histogram } from './metrics/implementations/histogram';
 import { Set } from './metrics/implementations/set';
 import { Summary } from './metrics/implementations/summary';
-import { Timer } from './metrics/implementations/timer';
 import { MetricInterface } from './metrics/metric.interface';
-import { Atlas } from './vendors/implementations/atlas';
+import { MetricsTypesEnum } from './metrics/metrics-types.enum';
 import { DogStatsd } from './vendors/implementations/dog-statsd';
 import { Prometheus } from './vendors/implementations/prometheus';
 import { SupportedVendorsEnum } from './vendors/supported-vendors.enum';
@@ -29,13 +28,67 @@ export class NodeAmf {
     return nodeAmf;
   }
 
-  getMetric<T = Counter | Event | Gauge | Histogram | Set | Summary | Timer>(
+  getMetric<T = Counter | Event | Gauge | Histogram | Set | Summary>(
     name: string
   ): T | undefined {
     return this.metricsRegistry.get(name) as unknown as T;
   }
 
-  getVendor<T = Prometheus | DogStatsd | Atlas>(
+  getCounter(name: string): Counter | undefined {
+    const metric = this.metricsRegistry.get(name) as unknown as Counter;
+    if (metric?.getType() !== MetricsTypesEnum.Counter) {
+      return undefined;
+    }
+
+    return metric;
+  }
+
+  getEvent(name: string): Event | undefined {
+    const metric = this.metricsRegistry.get(name) as unknown as Event;
+    if (metric?.getType() !== MetricsTypesEnum.Event) {
+      return undefined;
+    }
+
+    return metric;
+  }
+
+  getGauge(name: string): Gauge | undefined {
+    const metric = this.metricsRegistry.get(name) as unknown as Gauge;
+    if (metric?.getType() !== MetricsTypesEnum.Gauge) {
+      return undefined;
+    }
+
+    return metric;
+  }
+
+  getHistogram(name: string): Histogram | undefined {
+    const metric = this.metricsRegistry.get(name) as unknown as Histogram;
+    if (metric?.getType() !== MetricsTypesEnum.Histogram) {
+      return undefined;
+    }
+
+    return metric;
+  }
+
+  getSet(name: string): Set | undefined {
+    const metric = this.metricsRegistry.get(name) as unknown as Set;
+    if (metric?.getType() !== MetricsTypesEnum.Set) {
+      return undefined;
+    }
+
+    return metric;
+  }
+
+  getSummary(name: string): Summary | undefined {
+    const metric = this.metricsRegistry.get(name) as unknown as Summary;
+    if (metric?.getType() !== MetricsTypesEnum.Summary) {
+      return undefined;
+    }
+
+    return metric;
+  }
+
+  getVendor<T = Prometheus | DogStatsd>(
     name: SupportedVendorsEnum
   ): T | undefined {
     return this.vendorsRegistry.get(name) as unknown as T;

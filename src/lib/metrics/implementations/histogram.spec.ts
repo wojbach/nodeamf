@@ -15,7 +15,7 @@ test('object properly initiates and class constructor arguments are accessible u
     histogram = new Histogram(
       'histogram1',
       { tags: ['tag1', 'tag2'], buckets: [0.1, 5, 15, 50, 100, 500] },
-      [SupportedVendorsEnum.Atlas]
+      [SupportedVendorsEnum.Prometheus]
     );
   });
   t.is(histogram.getName(), 'histogram1');
@@ -23,7 +23,9 @@ test('object properly initiates and class constructor arguments are accessible u
     tags: ['tag1', 'tag2'],
     buckets: [0.1, 5, 15, 50, 100, 500],
   });
-  t.deepEqual(histogram.getVendorsRegistry(), [SupportedVendorsEnum.Atlas]);
+  t.deepEqual(histogram.getVendorsRegistry(), [
+    SupportedVendorsEnum.Prometheus,
+  ]);
 });
 
 test('object properly returns its type', (t) => {
@@ -35,13 +37,13 @@ test('measure method is callable mock, no state is saved', (t) => {
   const histogram1 = new Histogram(
     'histogram1',
     { tags: ['tag1', 'tag2'], buckets: [0.1, 5, 15, 50, 100, 500] },
-    [SupportedVendorsEnum.Atlas]
+    [SupportedVendorsEnum.Prometheus]
   );
 
   const histogram2 = new Histogram(
     'histogram1',
     { tags: ['tag1', 'tag2'], buckets: [0.1, 5, 15, 50, 100, 500] },
-    [SupportedVendorsEnum.Atlas]
+    [SupportedVendorsEnum.Prometheus]
   );
 
   t.notThrows(() => {

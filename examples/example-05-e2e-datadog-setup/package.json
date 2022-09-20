@@ -1,12 +1,12 @@
 {
-  "name": "example-04-e2e-prometheus-setup",
+  "name": "example-05-e2e-datadog-setup",
   "version": "1.0.0",
   "description": "",
   "main": "app.ts",
   "scripts": {
     "start": "ts-node app.ts",
-    "start-docker": "cd ./docker && docker-compose -p example-04-e2e-prometheus-setup up -d",
-    "stop-docker": "cd ./docker && docker-compose -p example-04-e2e-prometheus-setup down"
+    "start-docker": "cd ./docker && docker-compose -p example-05-e2e-datadog-setup up -d",
+    "stop-docker": "cd ./docker && docker-compose -p example-05-e2e-datadog-setup down"
   },
   "author": "wojbach",
   "license": "ISC",

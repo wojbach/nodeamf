@@ -13,12 +13,12 @@ test('object properly initiates and class constructor arguments are accessible u
   let set;
   t.notThrows(() => {
     set = new Set('set1', { tags: ['tag1', 'tag2'] }, [
-      SupportedVendorsEnum.Atlas,
+      SupportedVendorsEnum.Prometheus,
     ]);
   });
   t.is(set.getName(), 'set1');
   t.deepEqual(set.getOptions(), { tags: ['tag1', 'tag2'] });
-  t.deepEqual(set.getVendorsRegistry(), [SupportedVendorsEnum.Atlas]);
+  t.deepEqual(set.getVendorsRegistry(), [SupportedVendorsEnum.Prometheus]);
 });
 
 test('object properly returns its type', (t) => {
@@ -28,11 +28,11 @@ test('object properly returns its type', (t) => {
 
 test('measure method is callable mock, no state is saved', (t) => {
   const set1 = new Set('set1', { tags: ['tag1', 'tag2'] }, [
-    SupportedVendorsEnum.Atlas,
+    SupportedVendorsEnum.Prometheus,
   ]);
 
   const set2 = new Set('set1', { tags: ['tag1', 'tag2'] }, [
-    SupportedVendorsEnum.Atlas,
+    SupportedVendorsEnum.Prometheus,
   ]);
 
   t.notThrows(() => {

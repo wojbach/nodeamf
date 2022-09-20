@@ -1,5 +1,4 @@
 import {
-  Atlas,
   DogStatsd,
   Gauge,
   NodeAmf,
@@ -49,19 +48,3 @@ setInterval(() => {
   nodeAmfDataDog.getMetric<Gauge>('cpu.system').set(cpuUsage.system);
   nodeAmfDataDog.getMetric<Gauge>('cpu.user').set(cpuUsage.user);
 }, 5000);
-
-
-// Atlas example
-
-const NodeMetrics = require('nflx-spectator-nodejsmetrics');
-
-const nodeAmfAtlas = NodeAmf.init({
-  vendors: [
-    new Atlas()
-  ],
-  metrics: []
-});
-
-const registry = nodeAmfAtlas.getVendor<Atlas>(SupportedVendorsEnum.Atlas).getClient();
-const metrics = new NodeMetrics(registry);
-metrics.start();

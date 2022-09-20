@@ -13,12 +13,12 @@ test('object properly initiates and class constructor arguments are accessible u
   let gauge;
   t.notThrows(() => {
     gauge = new Gauge('gauge1', { tags: ['tag1', 'tag2'] }, [
-      SupportedVendorsEnum.Atlas,
+      SupportedVendorsEnum.Prometheus,
     ]);
   });
   t.is(gauge.getName(), 'gauge1');
   t.deepEqual(gauge.getOptions(), { tags: ['tag1', 'tag2'] });
-  t.deepEqual(gauge.getVendorsRegistry(), [SupportedVendorsEnum.Atlas]);
+  t.deepEqual(gauge.getVendorsRegistry(), [SupportedVendorsEnum.Prometheus]);
 });
 
 test('object properly returns its type', (t) => {
@@ -28,11 +28,11 @@ test('object properly returns its type', (t) => {
 
 test('measure method is callable mock, no state is saved', (t) => {
   const gauge1 = new Gauge('gauge1', { tags: ['tag1', 'tag2'] }, [
-    SupportedVendorsEnum.Atlas,
+    SupportedVendorsEnum.Prometheus,
   ]);
 
   const gauge2 = new Gauge('gauge1', { tags: ['tag1', 'tag2'] }, [
-    SupportedVendorsEnum.Atlas,
+    SupportedVendorsEnum.Prometheus,
   ]);
 
   t.notThrows(() => {

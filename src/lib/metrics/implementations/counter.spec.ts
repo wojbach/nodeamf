@@ -13,12 +13,12 @@ test('object properly initiates and class constructor arguments are accessible u
   let counter;
   t.notThrows(() => {
     counter = new Counter('counter1', { tags: ['tag1', 'tag2'] }, [
-      SupportedVendorsEnum.Atlas,
+      SupportedVendorsEnum.Prometheus,
     ]);
   });
   t.is(counter.getName(), 'counter1');
   t.deepEqual(counter.getOptions(), { tags: ['tag1', 'tag2'] });
-  t.deepEqual(counter.getVendorsRegistry(), [SupportedVendorsEnum.Atlas]);
+  t.deepEqual(counter.getVendorsRegistry(), [SupportedVendorsEnum.Prometheus]);
 });
 
 test('object properly returns its type', (t) => {
@@ -28,11 +28,11 @@ test('object properly returns its type', (t) => {
 
 test('measure method is callable mock, no state is saved', (t) => {
   const counter1 = new Counter('counter1', { tags: ['tag1', 'tag2'] }, [
-    SupportedVendorsEnum.Atlas,
+    SupportedVendorsEnum.Prometheus,
   ]);
 
   const counter2 = new Counter('counter1', { tags: ['tag1', 'tag2'] }, [
-    SupportedVendorsEnum.Atlas,
+    SupportedVendorsEnum.Prometheus,
   ]);
 
   t.notThrows(() => {

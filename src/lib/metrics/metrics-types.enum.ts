@@ -5,5 +5,4 @@ export enum MetricsTypesEnum {
   Summary,
   Set,
   Event,
-  Timer,
 }

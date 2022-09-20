@@ -2,7 +2,7 @@ version: '3'
 
 services:
   http-server:
-    container_name: http-server
+    container_name: http-prometheus-server
     build:
       context: ..
     ports:

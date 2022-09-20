@@ -1,5 +1,6 @@
 import {
   Counter,
+  DogStatsd,
   Gauge,
   Histogram,
   NodeAmf,
@@ -10,7 +11,8 @@ import {
 
 const nodeAmf = NodeAmf.init({
   vendors: [
-    new Prometheus()
+    new Prometheus(),
+    new DogStatsd({host: 'my-host', port: 1337, globalTags: ['service', 'environment']})
   ],
   metrics: [
     new Counter('visits', { tags: ['country', 'browser'] }, [SupportedVendorsEnum.Prometheus]),
@@ -31,10 +33,15 @@ function getRandomIntInclusive(min, max) {
 
 setInterval(() => {
   nodeAmf.getMetric<Counter>('visits').increment(getRandomIntInclusive(0, 100), { 'country': countries[getRandomIntInclusive(0,4)] });
+  // or nodeAmf.getCounter('visits').increment(getRandomIntInclusive(0, 100), { 'country': countries[getRandomIntInclusive(0,4)] });
   nodeAmf.getMetric<Counter>('visits').increment(getRandomIntInclusive(0, 100), { 'browser': browsers[getRandomIntInclusive(0,2)] });
+  // or nodeAmf.getCounter('visits').increment(getRandomIntInclusive(0, 100), { 'browser': browsers[getRandomIntInclusive(0,2)] });
   nodeAmf.getMetric<Gauge>('currentUsersCount').set(getRandomIntInclusive(0, 100));
+  // or nodeAmf.getGauge('currentUsersCount').set(getRandomIntInclusive(0, 100));
   nodeAmf.getMetric<Histogram>('transactionsValue').observe(getRandomIntInclusive(1, 100));
+  // or nodeAmf.getHistogram('transactionsValue').observe(getRandomIntInclusive(1, 100));
   nodeAmf.getMetric<Summary>('responseTime').observe(getRandomIntInclusive(1, 1000));
+  // or nodeAmf.getSummary('responseTime').observe(getRandomIntInclusive(1, 1000));
 }, 5000);
 
 

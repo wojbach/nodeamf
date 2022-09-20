@@ -1,4 +1,4 @@
-import { Counter, NodeAmf, Prometheus, SupportedVendorsEnum } from '../../src';
+import { Counter, NodeAmf, Prometheus, SupportedVendorsEnum } from '@wojbach/nodeamf';
 
 const nodeAmf = NodeAmf.init({
   vendors: [

@@ -1,5 +1,4 @@
-import test, { beforeEach, ExecutionContext } from 'ava';
-import { StubbedInstance } from 'ts-sinon';
+import test, { ExecutionContext } from 'ava';
 import * as sinon from 'ts-sinon';
 
 import { Counter } from './metrics/implementations/counter';
@@ -10,13 +9,13 @@ import { SupportedVendorsEnum } from './vendors/supported-vendors.enum';
 import { VendorInterface } from './vendors/vendor.interface';
 
 type TestContext = {
-  vendor1: StubbedInstance<VendorInterface>;
-  vendor2: StubbedInstance<VendorInterface>;
-  metric1: StubbedInstance<Counter>;
-  metric2: StubbedInstance<Counter>;
+  vendor1: sinon.StubbedInstance<VendorInterface>;
+  vendor2: sinon.StubbedInstance<VendorInterface>;
+  metric1: sinon.StubbedInstance<Counter>;
+  metric2: sinon.StubbedInstance<Counter>;
 };
 
-beforeEach((t) => {
+test.beforeEach((t) => {
   const vendor1 = sinon.stubInterface<VendorInterface>({
     getName: 'vendor1' as SupportedVendorsEnum,
   });
@@ -84,6 +83,81 @@ test('object metrics registry finds existing entry also returns undefined on not
     undefined
   );
   t.deepEqual(nodeamf.getMetric('metric2' as SupportedVendorsEnum), undefined);
+});
+
+test('object metrics registry finds existing entry using getCounter method also returns undefined on not found entry or type mismatch', (t: ExecutionContext<TestContext>) => {
+  const counter = sinon.stubInterface<MetricInterface>({
+    getName: 'counter1',
+    getType: MetricsTypesEnum.Counter,
+    getVendorsRegistry: [],
+    getOptions: {},
+  });
+
+  const nodeamf = NodeAmf.init({ vendors: [], metrics: [counter] });
+  t.notDeepEqual(
+    nodeamf.getCounter('counter1' as SupportedVendorsEnum),
+    undefined
+  );
+  t.deepEqual(nodeamf.getCounter('metric' as SupportedVendorsEnum), undefined);
+  t.deepEqual(nodeamf.getGauge('counter1' as SupportedVendorsEnum), undefined);
+});
+
+test('object metrics registry finds existing entry using specific method also returns undefined on not found entry or type mismatch', (t: ExecutionContext<TestContext>) => {
+  const metricsMetaList = [
+    {
+      type: MetricsTypesEnum.Counter,
+      validGetter: 'getCounter',
+      invalidGetter: 'getGauge',
+    },
+    {
+      type: MetricsTypesEnum.Gauge,
+      validGetter: 'getGauge',
+      invalidGetter: 'getCounter',
+    },
+    {
+      type: MetricsTypesEnum.Histogram,
+      validGetter: 'getHistogram',
+      invalidGetter: 'getGauge',
+    },
+    {
+      type: MetricsTypesEnum.Summary,
+      validGetter: 'getSummary',
+      invalidGetter: 'getGauge',
+    },
+    {
+      type: MetricsTypesEnum.Set,
+      validGetter: 'getSet',
+      invalidGetter: 'getGauge',
+    },
+    {
+      type: MetricsTypesEnum.Event,
+      validGetter: 'getEvent',
+      invalidGetter: 'getGauge',
+    },
+  ];
+
+  for (const metricMeta of metricsMetaList) {
+    const metric = sinon.stubInterface<MetricInterface>({
+      getName: 'metric1',
+      getType: metricMeta.type,
+      getVendorsRegistry: [],
+      getOptions: {},
+    });
+
+    const nodeamf = NodeAmf.init({ vendors: [], metrics: [metric] });
+    t.notDeepEqual(
+      nodeamf[metricMeta.validGetter]('metric1' as SupportedVendorsEnum),
+      undefined
+    );
+    t.deepEqual(
+      nodeamf[metricMeta.validGetter]('metric2' as SupportedVendorsEnum),
+      undefined
+    );
+    t.deepEqual(
+      nodeamf[metricMeta.invalidGetter]('metric1' as SupportedVendorsEnum),
+      undefined
+    );
+  }
 });
 
 test('object properly initiates with vendors and metrics', (t: ExecutionContext<TestContext>) => {

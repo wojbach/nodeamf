@@ -5,7 +5,7 @@ import {
   NodeAmf,
   Prometheus,
   SupportedVendorsEnum
-} from '../../src';
+} from '@wojbach/nodeamf';
 
 const nodeAmf = NodeAmf.init({
   vendors: [
@@ -19,4 +19,9 @@ const nodeAmf = NodeAmf.init({
 });
 
 nodeAmf.getMetric<Counter>('simple-counter').increment(10);
+//or
+nodeAmf.getCounter('simple-counter').increment(10);
+
 nodeAmf.getMetric<Gauge>('simple-gauge').set(10);
+//or
+nodeAmf.getGauge('simple-gauge').set(10)

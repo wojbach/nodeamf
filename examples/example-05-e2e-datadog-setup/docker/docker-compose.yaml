@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  simple-datadog-metrics-app:
+    container_name: simple-datadog-metrics-app
+    build:
+      context: ..
+  dd-agent:
+    container_name: dd-agent
+    hostname: dd-agent
+    image: gcr.io/datadoghq/agent:7
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+    environment:
+      - DD_SITE=datadoghq.eu
+      - DD_API_KEY=0ffb460045bbbc3ee7f11ef61fd17e29
+      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
