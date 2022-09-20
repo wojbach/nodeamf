@@ -1,5 +1,5 @@
 {
-  "name": "nodeamf",
+  "name": "@wojbach/nodeamf",
   "version": "1.0.3",
   "description": "Node.js Application Metrics Facade",
   "main": "build/main/index.js",
