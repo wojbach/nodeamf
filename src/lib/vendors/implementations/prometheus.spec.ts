@@ -25,6 +25,13 @@ test('properly returns its name and supported metrics', (t) => {
     .forEach((value) => t.truthy(MetricsTypesEnum[value]));
 });
 
+test('properly sets a custom name for vendor', (t) => {
+  const vendor = new Prometheus({
+    name: 'my prometheus 1',
+  });
+  t.is(vendor.getName(), 'my prometheus 1');
+});
+
 test('properly registers metric of supported type', (t) => {
   const vendor = new Prometheus();
 

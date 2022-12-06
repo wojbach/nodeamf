@@ -14,11 +14,15 @@ test('object properly initiates and class constructor arguments are accessible u
   t.notThrows(() => {
     event = new Event('event1', { tags: ['tag1', 'tag2'] }, [
       SupportedVendorsEnum.Prometheus,
+      'another-named-vendor-client',
     ]);
   });
   t.is(event.getName(), 'event1');
   t.deepEqual(event.getOptions(), { tags: ['tag1', 'tag2'] });
-  t.deepEqual(event.getVendorsRegistry(), [SupportedVendorsEnum.Prometheus]);
+  t.deepEqual(event.getVendorsRegistry(), [
+    SupportedVendorsEnum.Prometheus,
+    'another-named-vendor-client',
+  ]);
 });
 
 test('object properly returns its type', (t) => {
@@ -29,10 +33,12 @@ test('object properly returns its type', (t) => {
 test('measure method is callable mock, no state is saved', (t) => {
   const event1 = new Event('event1', { tags: ['tag1', 'tag2'] }, [
     SupportedVendorsEnum.Prometheus,
+    'another-named-vendor-client',
   ]);
 
   const event2 = new Event('event1', { tags: ['tag1', 'tag2'] }, [
     SupportedVendorsEnum.Prometheus,
+    'another-named-vendor-client',
   ]);
 
   t.notThrows(() => {

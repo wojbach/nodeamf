@@ -8,10 +8,13 @@ import promClient, {
 
 import { MetricsTypesEnum } from '../../metrics/metrics-types.enum';
 import { SupportedVendorsEnum } from '../supported-vendors.enum';
+import { VendorAbstract } from '../vendor.abstract';
 import { VendorInterface } from '../vendor.interface';
 
-export class Prometheus implements VendorInterface {
-  private readonly name: SupportedVendorsEnum = SupportedVendorsEnum.Prometheus;
+type PrometheusConfigOptions = {
+  name?: string;
+};
+export class Prometheus extends VendorAbstract implements VendorInterface {
   private readonly supportedMetrics: MetricsTypesEnum[] = [
     MetricsTypesEnum.Counter,
     MetricsTypesEnum.Gauge,
@@ -26,13 +29,18 @@ export class Prometheus implements VendorInterface {
       .replace(/[^a-zA-Z0-9:_]+/g, `_`);
   private metricsRegistry: Map<string, Metric<string>> = new Map();
 
-  constructor() {
+  constructor(config?: PrometheusConfigOptions) {
+    super();
+
+    const name = config?.name;
+    if (name) {
+      this.name = name;
+    } else {
+      this.name = SupportedVendorsEnum.Prometheus;
+    }
+
     this.client = promClient;
     this.client.register.clear();
-  }
-
-  getName(): SupportedVendorsEnum {
-    return this.name;
   }
 
   getSupportedMetrics(): MetricsTypesEnum[] {

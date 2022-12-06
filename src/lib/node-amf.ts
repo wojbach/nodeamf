@@ -12,7 +12,7 @@ import { SupportedVendorsEnum } from './vendors/supported-vendors.enum';
 import { VendorInterface } from './vendors/vendor.interface';
 
 export class NodeAmf {
-  private vendorsRegistry: Map<SupportedVendorsEnum, VendorInterface> =
+  private vendorsRegistry: Map<SupportedVendorsEnum | string, VendorInterface> =
     new Map();
   private metricsRegistry: Map<string, MetricInterface> = new Map();
 

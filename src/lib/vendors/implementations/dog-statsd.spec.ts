@@ -23,7 +23,7 @@ test('underlying client is accessible through getter', (t) => {
   const vendor = new DogStatsd({
     mock: true,
   });
-  t.truthy(vendor.getClient());
+  t.truthy(vendor.getClient()['mock']);
 });
 
 test('properly returns its name and supported metrics', (t) => {
@@ -36,6 +36,25 @@ test('properly returns its name and supported metrics', (t) => {
   vendor
     .getSupportedMetrics()
     .forEach((value) => t.truthy(MetricsTypesEnum[value]));
+});
+
+test('properly sets a custom name for vendor', (t) => {
+  const vendor = new DogStatsd({
+    name: 'my datadog 1',
+  });
+  t.is(vendor.getName(), 'my datadog 1');
+});
+
+test('properly sets a custom name for vendor and a client config', (t) => {
+  const vendor = new DogStatsd({
+    name: 'my datadog 1',
+    mock: true,
+    globalTags: ['foo', 'bar'],
+  });
+
+  t.is(vendor.getName(), 'my datadog 1');
+  t.truthy(vendor.getClient()['mock']);
+  t.deepEqual(vendor.getClient()['globalTags'], ['foo', 'bar']);
 });
 
 test('properly registers metric of supported type', (t) => {

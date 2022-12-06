@@ -6,12 +6,12 @@ export abstract class MetricAbstract<T extends Record<string, unknown>> {
   protected readonly name: string;
   protected readonly type: MetricsTypesEnum;
   protected readonly options: T;
-  protected readonly registerInVendors: SupportedVendorsEnum[] = [];
+  protected readonly registerInVendors: (SupportedVendorsEnum | string)[] = [];
 
   constructor(
     name: string,
     options: T,
-    registerInVendors: SupportedVendorsEnum[]
+    registerInVendors: (SupportedVendorsEnum | string)[]
   ) {
     this.name = name;
     this.options = options;
@@ -30,7 +30,7 @@ export abstract class MetricAbstract<T extends Record<string, unknown>> {
     return this.type;
   }
 
-  getVendorsRegistry(): SupportedVendorsEnum[] {
+  getVendorsRegistry(): (SupportedVendorsEnum | string)[] {
     return this.registerInVendors;
   }
 }

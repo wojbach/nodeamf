@@ -15,7 +15,7 @@ test('object properly initiates and class constructor arguments are accessible u
     summary = new Summary(
       'summary1',
       { tags: ['tag1', 'tag2'], percentiles: [0.01, 0.1, 0.9, 0.99] },
-      [SupportedVendorsEnum.Prometheus]
+      [SupportedVendorsEnum.Prometheus, 'another-named-vendor-client']
     );
   });
   t.is(summary.getName(), 'summary1');
@@ -23,7 +23,10 @@ test('object properly initiates and class constructor arguments are accessible u
     tags: ['tag1', 'tag2'],
     percentiles: [0.01, 0.1, 0.9, 0.99],
   });
-  t.deepEqual(summary.getVendorsRegistry(), [SupportedVendorsEnum.Prometheus]);
+  t.deepEqual(summary.getVendorsRegistry(), [
+    SupportedVendorsEnum.Prometheus,
+    'another-named-vendor-client',
+  ]);
 });
 
 test('object properly returns its type', (t) => {
@@ -35,13 +38,13 @@ test('measure method is callable mock, no state is saved', (t) => {
   const summary1 = new Summary(
     'summary1',
     { tags: ['tag1', 'tag2'], percentiles: [0.01, 0.1, 0.9, 0.99] },
-    [SupportedVendorsEnum.Prometheus]
+    [SupportedVendorsEnum.Prometheus, 'another-named-vendor-client']
   );
 
   const summary2 = new Summary(
     'summary1',
     { tags: ['tag1', 'tag2'], percentiles: [0.01, 0.1, 0.9, 0.99] },
-    [SupportedVendorsEnum.Prometheus]
+    [SupportedVendorsEnum.Prometheus, 'another-named-vendor-client']
   );
 
   t.notThrows(() => {

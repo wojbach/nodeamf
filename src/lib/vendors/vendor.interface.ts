@@ -3,7 +3,7 @@ import { MetricsTypesEnum } from '../metrics/metrics-types.enum';
 import { SupportedVendorsEnum } from './supported-vendors.enum';
 
 export interface VendorInterface {
-  getName(): SupportedVendorsEnum;
+  getName(): SupportedVendorsEnum | string;
 
   getSupportedMetrics(): MetricsTypesEnum[];
 
