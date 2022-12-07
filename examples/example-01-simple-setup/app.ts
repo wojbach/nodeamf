@@ -1,12 +1,17 @@
-import { Counter, NodeAmf, Prometheus, SupportedVendorsEnum } from '@wojbach/nodeamf';
+import {
+  Counter,
+  NodeAmf,
+  Prometheus,
+  SupportedVendorsEnum,
+} from '@wojbach/nodeamf';
 
 const nodeAmf = NodeAmf.init({
-  vendors: [
-    new Prometheus()
-  ],
+  vendors: [new Prometheus()],
   metrics: [
-    new Counter('simple-counter', {}, [SupportedVendorsEnum.Prometheus])
-  ]
+    new Counter('simple-counter', {}, [SupportedVendorsEnum.Prometheus]),
+  ],
 });
 
 nodeAmf.getMetric<Counter>('simple-counter').increment(10);
+//or
+nodeAmf.getCounter('simple-counter').increment(10);

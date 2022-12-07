@@ -6,5 +6,5 @@ export interface MetricInterface {
   getType(): MetricsTypesEnum;
   getName(): string;
   getOptions(): Record<string, unknown>;
-  getVendorsRegistry(): SupportedVendorsEnum[];
+  getVendorsRegistry(): (SupportedVendorsEnum | string)[];
 }

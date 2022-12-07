@@ -63,6 +63,34 @@ nodeAmf.getCounter('simple-counter').increment(10);
 nodeAmf.getGauge('simple-gauge').set(10)
 ```
 
+#### Setup vendors with custom names
+
+```typescript
+import {
+  Counter,
+  Gauge,
+  DogStatsd,
+  NodeAmf,
+  Prometheus,
+  SupportedVendorsEnum
+} from '@wojbach/nodeamf';
+
+const nodeAmf = NodeAmf.init({
+  vendors: [
+    new Prometheus({ name: 'vendor1' }),
+    new DogStatsd({ name: 'vendor2' }),
+    new Prometheus({ name: 'vendor3' }),
+  ],
+  metrics: [
+    new Counter('simple-counter', {}, ['vendor1', 'vendor2']),
+    new Gauge('simple-gauge', {}, ['vendor2', 'vendor3']),
+  ]
+});
+
+nodeAmf.getCounter('simple-counter').increment(10);
+nodeAmf.getGauge('simple-gauge').set(10)
+```
+
 #### Using metrics tags
 ```typescript
 import {

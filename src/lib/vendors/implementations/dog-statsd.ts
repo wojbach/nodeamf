@@ -2,12 +2,12 @@ import { ClientOptions, StatsD } from 'hot-shots';
 
 import { MetricsTypesEnum } from '../../metrics/metrics-types.enum';
 import { SupportedVendorsEnum } from '../supported-vendors.enum';
+import { VendorAbstract } from '../vendor.abstract';
 import { VendorInterface } from '../vendor.interface';
 
-type DogStatsdConfigOptions = ClientOptions;
+type DogStatsdConfigOptions = ClientOptions & { name?: string };
 
-export class DogStatsd implements VendorInterface {
-  private readonly name: SupportedVendorsEnum = SupportedVendorsEnum.DogStatsD;
+export class DogStatsd extends VendorAbstract implements VendorInterface {
   private readonly supportedMetrics: MetricsTypesEnum[] = [
     MetricsTypesEnum.Counter,
     MetricsTypesEnum.Gauge,
@@ -29,11 +29,17 @@ export class DogStatsd implements VendorInterface {
   > = new Map();
 
   constructor(config?: DogStatsdConfigOptions) {
-    this.client = new StatsD(config);
-  }
+    super();
 
-  getName(): SupportedVendorsEnum {
-    return this.name;
+    const name = config?.name;
+    if (name) {
+      this.name = name;
+      delete config.name;
+    } else {
+      this.name = SupportedVendorsEnum.DogStatsD;
+    }
+
+    this.client = new StatsD(config);
   }
 
   getSupportedMetrics(): MetricsTypesEnum[] {
