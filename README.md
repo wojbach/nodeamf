@@ -1,8 +1,10 @@
 ![logo](logo.png)
 
+[![license](https://img.shields.io/github/license/wojbach/nodeamf)](https://github.com/wojbach/nodeamf/blob/master/LICENSE)
+![node](https://img.shields.io/node/v/@wojbach/nodeamf)
+[![npm](https://img.shields.io/npm/v/@wojbach/nodeamf)](https://www.npmjs.com/package/@wojbach/nodeamf)
 [![Circleci](https://img.shields.io/circleci/build/github/wojbach/nodeamf?label=ci&logo=CircleCI&style=flat)](https://app.circleci.com/pipelines/github/wojbach/nodeamf?branch=master)
 [![codecov](https://codecov.io/gh/wojbach/nodeamf/branch/master/graph/badge.svg?token=RVDN6RNU90)](https://codecov.io/gh/wojbach/nodeamf)
-[![npm](https://img.shields.io/npm/v/@wojbach/nodeamf)](https://www.npmjs.com/package/@wojbach/nodeamf)
 [![npm](https://img.shields.io/npm/dm/@wojbach/nodeamf?label=npm%20downloads)](https://www.npmjs.com/package/@wojbach/nodeamf)
 
 ## Description

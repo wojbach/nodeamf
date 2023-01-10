@@ -4,10 +4,8 @@ import { MetricsTypesEnum } from '../metrics-types.enum';
 
 export type SummaryOptions = {
   tags?: string[];
-  /**
-   * Only for prometheus
-   */
-  percentiles?: number[];
+  percentiles?: number[]; //only supported in prometheus
+  unit?: string; //only supported in CloudWatch (https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-cloudwatch/enums/standardunit.html)
 };
 
 export class Summary

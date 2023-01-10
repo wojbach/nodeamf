@@ -4,6 +4,7 @@ import { MetricsTypesEnum } from '../metrics-types.enum';
 
 export type GaugeOptions = {
   tags?: string[];
+  unit?: string; //only supported in Cloud Watch (https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-cloudwatch/enums/standardunit.html)
 };
 
 export class Gauge
