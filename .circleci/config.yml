@@ -3,7 +3,7 @@ version: 2
 jobs:
   'node-14':
     docker:
-      - image: circleci/node:16
+      - image: cimg/node:14
     steps:
       - checkout
       - restore_cache:
@@ -20,7 +20,7 @@ jobs:
       - run: npm run cov:check
   'node-16':
     docker:
-      - image: circleci/node:18
+      - image: cimg/node:16
     steps:
       - checkout
       - restore_cache:
@@ -37,7 +37,7 @@ jobs:
       - run: npm run cov:check
   'node-18':
     docker:
-      - image: circleci/node:18
+      - image: cimg/node:18
     steps:
       - checkout
       - restore_cache:
@@ -54,7 +54,7 @@ jobs:
       - run: npm run cov:check
   'node-latest':
     docker:
-      - image: circleci/node:latest
+      - image: cimg/node:latest
     steps:
       - checkout
       - restore_cache:
@@ -77,4 +77,4 @@ workflows:
       - 'node-14'
       - 'node-16'
       - 'node-18'
-      - 'node-latest'
+      - 'node-current'
