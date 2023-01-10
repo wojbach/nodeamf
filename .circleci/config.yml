@@ -3,7 +3,7 @@ version: 2
 jobs:
   'node-14':
     docker:
-      - image: cimg/node:14
+      - image: cimg/node:14.21.1
     steps:
       - checkout
       - restore_cache:
@@ -20,7 +20,7 @@ jobs:
       - run: npm run cov:check
   'node-16':
     docker:
-      - image: cimg/node:16
+      - image: cimg/node:16.14.2
     steps:
       - checkout
       - restore_cache:
@@ -37,7 +37,7 @@ jobs:
       - run: npm run cov:check
   'node-18':
     docker:
-      - image: cimg/node:18
+      - image: cimg/node:18.12.1
     steps:
       - checkout
       - restore_cache:
@@ -54,7 +54,7 @@ jobs:
       - run: npm run cov:check
   'node-current':
     docker:
-      - image: cimg/node:latest
+      - image: cimg/node:19.3.0
     steps:
       - checkout
       - restore_cache:
