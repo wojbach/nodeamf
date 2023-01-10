@@ -52,7 +52,7 @@ jobs:
       - run: npm test
       - run: npm run cov:send
       - run: npm run cov:check
-  'node-latest':
+  'node-current':
     docker:
       - image: cimg/node:latest
     steps:
