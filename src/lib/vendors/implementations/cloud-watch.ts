@@ -22,7 +22,6 @@ export class CloudWatch extends VendorAbstract implements VendorInterface {
   private readonly supportedMetrics: MetricsTypesEnum[] = [
     MetricsTypesEnum.Counter,
     MetricsTypesEnum.Gauge,
-    MetricsTypesEnum.Summary,
   ];
   private readonly client: CloudWatchClient;
   private readonly buffer: ({ hash: string } & MetricDatum)[] = [];
@@ -32,7 +31,7 @@ export class CloudWatch extends VendorAbstract implements VendorInterface {
   private readonly maxBufferSize: number = 1000;
   private readonly bufferSize: number = this.maxBufferSize;
   private readonly flushTimeout: number = 60000;
-  private readonly namespace: string = undefined;
+  private readonly namespace: string = 'DEFAULT';
   private timer: ReturnType<typeof setTimeout>;
   private metricsRegistry: Map<
     string,
@@ -150,12 +149,6 @@ export class CloudWatch extends VendorAbstract implements VendorInterface {
         .sort((a, b) => a.Name.localeCompare(b.Name)),
       Unit: (metric.options.unit as string) || StandardUnit.None,
       Value: args[0] || 1,
-      StatisticValues: {
-        Sum: args[0] || 1,
-        Maximum: args[0] || 1,
-        Minimum: args[0] || 1,
-        SampleCount: 1,
-      },
       Timestamp: new Date(),
     };
   }
@@ -165,7 +158,7 @@ export class CloudWatch extends VendorAbstract implements VendorInterface {
       metricDatum.MetricName + JSON.stringify(metricDatum.Dimensions);
     const metricInBuffer = this.buffer.find((entry) => entry.hash === hash);
 
-    if (!metricInBuffer || metricType == MetricsTypesEnum.Summary) {
+    if (!metricInBuffer) {
       this.buffer.push({ hash, ...metricDatum });
     } else {
       this.aggregateToMetricInBuffer(metricType, metricInBuffer, metricDatum);
@@ -183,29 +176,11 @@ export class CloudWatch extends VendorAbstract implements VendorInterface {
     metricInBuffer: MetricDatum,
     metricDatum: MetricDatum
   ) {
-    if (metricType === MetricsTypesEnum.Gauge) {
-      metricInBuffer.Value = metricDatum.Value;
-    } else {
+    if (metricType === MetricsTypesEnum.Counter) {
       metricInBuffer.Value += metricDatum.Value;
+    } else {
+      metricInBuffer.Value = metricDatum.Value;
     }
-
-    metricInBuffer.StatisticValues.Sum += metricDatum.StatisticValues.Sum;
-    if (
-      metricInBuffer.StatisticValues.Minimum >
-      metricDatum.StatisticValues.Minimum
-    ) {
-      metricInBuffer.StatisticValues.Minimum =
-        metricDatum.StatisticValues.Minimum;
-    }
-    if (
-      metricInBuffer.StatisticValues.Maximum <
-      metricDatum.StatisticValues.Maximum
-    ) {
-      metricInBuffer.StatisticValues.Maximum =
-        metricDatum.StatisticValues.Maximum;
-    }
-    metricInBuffer.StatisticValues.SampleCount++;
-    metricInBuffer.Timestamp = metricDatum.Timestamp;
   }
   private flushBuffer() {
     clearTimeout(this.timer);

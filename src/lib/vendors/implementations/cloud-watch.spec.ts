@@ -136,7 +136,7 @@ test('calling counter metric invokes underlying client properly', (t) => {
   vendor.callMetric('counter', 'increment', [13, { tag1: '1', tag2: 'foo' }]);
 
   t.deepEqual(sendMock?.firstCall?.firstArg?.input, {
-    Namespace: undefined,
+    Namespace: 'DEFAULT',
     MetricData: [
       {
         MetricName: 'counter',
@@ -152,12 +152,6 @@ test('calling counter metric invokes underlying client properly', (t) => {
         ],
         Unit: 'None',
         Value: 13,
-        StatisticValues: {
-          Sum: 13,
-          Maximum: 13,
-          Minimum: 13,
-          SampleCount: 1,
-        },
         Timestamp: now,
       },
     ],
@@ -183,7 +177,7 @@ test('calling counter metric with set unit type invokes underlying client proper
   vendor.callMetric('counter', 'increment', [13, { tag1: '1', tag2: 'foo' }]);
 
   t.deepEqual(sendMock?.firstCall?.firstArg?.input, {
-    Namespace: undefined,
+    Namespace: 'DEFAULT',
     MetricData: [
       {
         MetricName: 'counter',
@@ -199,12 +193,6 @@ test('calling counter metric with set unit type invokes underlying client proper
         ],
         Unit: 'Count',
         Value: 13,
-        StatisticValues: {
-          Sum: 13,
-          Maximum: 13,
-          Minimum: 13,
-          SampleCount: 1,
-        },
         Timestamp: now,
       },
     ],
@@ -248,7 +236,7 @@ test('calling counter metric invokes underlying client properly after flush time
   clock.tick(210);
 
   t.deepEqual(sendMock?.firstCall?.firstArg?.input, {
-    Namespace: undefined,
+    Namespace: 'DEFAULT',
     MetricData: [
       {
         MetricName: 'counter',
@@ -264,12 +252,6 @@ test('calling counter metric invokes underlying client properly after flush time
         ],
         Unit: 'None',
         Value: 13,
-        StatisticValues: {
-          Sum: 13,
-          Maximum: 13,
-          Minimum: 13,
-          SampleCount: 1,
-        },
         Timestamp: now,
       },
     ],
@@ -308,38 +290,26 @@ test('calling counter metric invokes underlying client properly few times after 
   clock.tick(55);
 
   t.deepEqual(sendMock?.getCall(0)?.firstArg?.input, {
-    Namespace: undefined,
+    Namespace: 'DEFAULT',
     MetricData: [
       {
         MetricName: 'counter',
         Dimensions: [],
         Unit: 'None',
         Value: first.reduce((a, b) => a + b, 0),
-        StatisticValues: {
-          Sum: first.reduce((a, b) => a + b, 0),
-          Maximum: Math.max(...first),
-          Minimum: Math.min(...first),
-          SampleCount: first.length,
-        },
         Timestamp: now,
       },
     ],
   });
 
   t.deepEqual(sendMock?.getCall(1)?.firstArg?.input, {
-    Namespace: undefined,
+    Namespace: 'DEFAULT',
     MetricData: [
       {
         MetricName: 'counter',
         Dimensions: [],
         Unit: 'None',
         Value: second.reduce((a, b) => a + b, 0),
-        StatisticValues: {
-          Sum: second.reduce((a, b) => a + b, 0),
-          Maximum: Math.max(...second),
-          Minimum: Math.min(...second),
-          SampleCount: second.length,
-        },
         Timestamp: new Date(now.getTime() + 55),
       },
     ],
@@ -381,12 +351,6 @@ test('calling counter metric with custom namespace invokes underlying client pro
         ],
         Unit: 'None',
         Value: 13,
-        StatisticValues: {
-          Sum: 13,
-          Maximum: 13,
-          Minimum: 13,
-          SampleCount: 1,
-        },
         Timestamp: now,
       },
     ],
@@ -409,7 +373,7 @@ test('calling gauge metric invokes underlying client properly', (t) => {
   vendor.callMetric('gauge', 'set', [10, { tag1: '1', tag2: 'foo' }]);
 
   t.deepEqual(sendMock?.firstCall?.firstArg?.input, {
-    Namespace: undefined,
+    Namespace: 'DEFAULT',
     MetricData: [
       {
         MetricName: 'gauge',
@@ -425,56 +389,6 @@ test('calling gauge metric invokes underlying client properly', (t) => {
         ],
         Unit: 'None',
         Value: 10,
-        StatisticValues: {
-          Sum: 10,
-          Maximum: 10,
-          Minimum: 10,
-          SampleCount: 1,
-        },
-        Timestamp: now,
-      },
-    ],
-  });
-
-  sendMock.restore();
-});
-
-test('calling summary metric invokes underlying client properly', (t) => {
-  const now = new Date();
-  sinon.default.useFakeTimers(now);
-
-  const vendor = new CloudWatch({ bufferSize: 1 });
-  const client = vendor.getClient();
-  const sendMock = sinon.default
-    .stub(client, 'send')
-    .resolves({ $metadata: {} });
-
-  vendor.registerMetric('summary', MetricsTypesEnum.Summary, {});
-  vendor.callMetric('summary', 'observe', [20, { tag1: '1', tag2: 'foo' }]);
-
-  t.deepEqual(sendMock?.firstCall?.firstArg?.input, {
-    Namespace: undefined,
-    MetricData: [
-      {
-        MetricName: 'summary',
-        Dimensions: [
-          {
-            Name: 'tag1',
-            Value: '1',
-          },
-          {
-            Name: 'tag2',
-            Value: 'foo',
-          },
-        ],
-        Unit: 'None',
-        Value: 20,
-        StatisticValues: {
-          Sum: 20,
-          Maximum: 20,
-          Minimum: 20,
-          SampleCount: 1,
-        },
         Timestamp: now,
       },
     ],
@@ -508,19 +422,13 @@ test('metric names ARE modified if their names are invalid from default naming s
     vendor.callMetric(invalidMetricName, 'increment', []);
 
     t.deepEqual(sendMock?.firstCall?.firstArg?.input, {
-      Namespace: undefined,
+      Namespace: 'DEFAULT',
       MetricData: [
         {
           MetricName: validMetricName,
           Dimensions: [],
           Unit: 'None',
           Value: 1,
-          StatisticValues: {
-            Sum: 1,
-            Maximum: 1,
-            Minimum: 1,
-            SampleCount: 1,
-          },
           Timestamp: now,
         },
       ],
@@ -553,19 +461,13 @@ test('metric names ARE NOT modified if their names are valid from default naming
     vendor.callMetric(validMetricName, 'increment', []);
 
     t.deepEqual(sendMock?.firstCall?.firstArg?.input, {
-      Namespace: undefined,
+      Namespace: 'DEFAULT',
       MetricData: [
         {
           MetricName: validMetricName,
           Dimensions: [],
           Unit: 'None',
           Value: 1,
-          StatisticValues: {
-            Sum: 1,
-            Maximum: 1,
-            Minimum: 1,
-            SampleCount: 1,
-          },
           Timestamp: now,
         },
       ],
@@ -606,19 +508,13 @@ test('metric names ARE modified according to the custom naming strategy', (t) =>
     vendor.callMetric(givenMetricName, 'increment', []);
 
     t.deepEqual(sendMock?.firstCall?.firstArg?.input, {
-      Namespace: undefined,
+      Namespace: 'DEFAULT',
       MetricData: [
         {
           MetricName: expectedMetricName,
           Dimensions: [],
           Unit: 'None',
           Value: 1,
-          StatisticValues: {
-            Sum: 1,
-            Maximum: 1,
-            Minimum: 1,
-            SampleCount: 1,
-          },
           Timestamp: now,
         },
       ],
@@ -647,7 +543,7 @@ test('calling counter metric multiple times aggregates stats properly and invoke
   vendor.callMetric('counter', 'increment', [7]);
 
   t.deepEqual(sendMock?.firstCall?.firstArg?.input, {
-    Namespace: undefined,
+    Namespace: 'DEFAULT',
     MetricData: [
       {
         MetricName: 'counter',
@@ -663,12 +559,6 @@ test('calling counter metric multiple times aggregates stats properly and invoke
         ],
         Unit: 'None',
         Value: 29,
-        StatisticValues: {
-          Sum: 29,
-          Maximum: 15,
-          Minimum: 1,
-          SampleCount: 3,
-        },
         Timestamp: now,
       },
       {
@@ -676,12 +566,6 @@ test('calling counter metric multiple times aggregates stats properly and invoke
         Dimensions: [],
         Unit: 'None',
         Value: 7,
-        StatisticValues: {
-          Sum: 7,
-          Maximum: 7,
-          Minimum: 7,
-          SampleCount: 1,
-        },
         Timestamp: now,
       },
     ],
@@ -709,7 +593,7 @@ test('calling gauge metric multiple times aggregates stats properly and invokes 
   vendor.callMetric('gauge', 'set', [13]);
 
   t.deepEqual(sendMock?.firstCall?.firstArg?.input, {
-    Namespace: undefined,
+    Namespace: 'DEFAULT',
     MetricData: [
       {
         MetricName: 'gauge',
@@ -725,12 +609,6 @@ test('calling gauge metric multiple times aggregates stats properly and invokes 
         ],
         Unit: 'None',
         Value: 10,
-        StatisticValues: {
-          Sum: 60,
-          Maximum: 30,
-          Minimum: 10,
-          SampleCount: 3,
-        },
         Timestamp: now,
       },
       {
@@ -738,75 +616,6 @@ test('calling gauge metric multiple times aggregates stats properly and invokes 
         Dimensions: [],
         Unit: 'None',
         Value: 13,
-        StatisticValues: {
-          Sum: 13,
-          Maximum: 13,
-          Minimum: 13,
-          SampleCount: 1,
-        },
-        Timestamp: now,
-      },
-    ],
-  });
-
-  sendMock.restore();
-});
-
-test('calling summary metric multiple times does not aggregate stats to allow CloudWatch calculate percentiles and invokes underlying client properly', (t) => {
-  const now = new Date();
-  sinon.default.useFakeTimers(now);
-
-  const vendor = new CloudWatch({ bufferSize: 3 });
-  const client = vendor.getClient();
-  const sendMock = sinon.default
-    .stub(client, 'send')
-    .resolves({ $metadata: {} });
-
-  vendor.registerMetric('summary', MetricsTypesEnum.Summary, {});
-  vendor.callMetric('summary', 'observe', [1]);
-  vendor.callMetric('summary', 'observe', [15]);
-  vendor.callMetric('summary', 'observe', [7]);
-
-  t.deepEqual(sendMock?.firstCall?.firstArg?.input, {
-    Namespace: undefined,
-    MetricData: [
-      {
-        MetricName: 'summary',
-        Dimensions: [],
-        Unit: 'None',
-        Value: 1,
-        StatisticValues: {
-          Sum: 1,
-          Maximum: 1,
-          Minimum: 1,
-          SampleCount: 1,
-        },
-        Timestamp: now,
-      },
-      {
-        MetricName: 'summary',
-        Dimensions: [],
-        Unit: 'None',
-        Value: 15,
-        StatisticValues: {
-          Sum: 15,
-          Maximum: 15,
-          Minimum: 15,
-          SampleCount: 1,
-        },
-        Timestamp: now,
-      },
-      {
-        MetricName: 'summary',
-        Dimensions: [],
-        Unit: 'None',
-        Value: 7,
-        StatisticValues: {
-          Sum: 7,
-          Maximum: 7,
-          Minimum: 7,
-          SampleCount: 1,
-        },
         Timestamp: now,
       },
     ],
