@@ -8,7 +8,12 @@
 [![npm](https://img.shields.io/npm/dm/@wojbach/nodeamf?label=npm%20downloads)](https://www.npmjs.com/package/@wojbach/nodeamf)
 
 ## Description
-Nodeamf offers an abstraction over metrics like counters, gauges, histograms for multiple vendors. It makes application metrics vendor-neutral.
+Nodeamf offers an abstraction over metrics like counters, gauges, histograms for multiple vendors:
+- [AWS Cloud Watch](https://aws.amazon.com/cloudwatch/) <img src="https://github.githubassets.com/images/icons/emoji/unicode/1f195.png" height="20"/>
+- [Data Dog](https://www.datadoghq.com/)
+- [Prometheus](https://prometheus.io/)
+
+It makes application metrics vendor-neutral.
 Package is 100% written in TypeScript but can be easily used in a pure JavaScript projects.
 
 ## Installation
@@ -20,7 +25,7 @@ $ npm install nodeamf
 $ yarn add nodeamf
 ```
 
-## Usage
+## Base Usage
 #### Setup with one metric and Prometheus
 
 ```typescript
@@ -37,7 +42,39 @@ const nodeAmf = NodeAmf.init({
 
 nodeAmf.getCounter('simple-counter').increment(10);
 ```
+## Vendors and metrics support
 
+### A list of supported metrics in each vendor
+|           	| AWS Cloud Watch            	            | Data Dog                 	| Prometheus               	|
+|-----------	|-----------------------------------------|--------------------------	|--------------------------	|
+| Counter   	| <img src="https://github.githubassets.com/images/icons/emoji/unicode/2714.png" height="20"/>         	            | <img src="https://github.githubassets.com/images/icons/emoji/unicode/2714.png" height="20"/>       	| <img src="https://github.githubassets.com/images/icons/emoji/unicode/2714.png" height="20"/>       	|
+| Event     	| <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" height="20"/>   	            | <img src="https://github.githubassets.com/images/icons/emoji/unicode/2714.png" height="20"/>       	| <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" height="20"/> 	|
+| Gauge     	| <img src="https://github.githubassets.com/images/icons/emoji/unicode/2714.png" height="20"/>         	            | <img src="https://github.githubassets.com/images/icons/emoji/unicode/2714.png" height="20"/>       	| <img src="https://github.githubassets.com/images/icons/emoji/unicode/2714.png" height="20"/>       	|
+| Histogram 	| <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" height="20"/> * 	| <img src="https://github.githubassets.com/images/icons/emoji/unicode/2714.png" height="20"/>       	| <img src="https://github.githubassets.com/images/icons/emoji/unicode/2714.png" height="20"/>       	|
+| Set       	| <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" height="20"/>   	            | <img src="https://github.githubassets.com/images/icons/emoji/unicode/2714.png" height="20"/>       	| <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" height="20"/> 	|
+| Summary   	| <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" height="20"/>   	            | <img src="https://github.githubassets.com/images/icons/emoji/unicode/2716.png" height="20"/> 	| <img src="https://github.githubassets.com/images/icons/emoji/unicode/2714.png" height="20"/>       	|
+<sup>*</sup> AWS Cloud Watch offers many statistics definitions for metrics and NodeAmf package is compatible with this feature, more can be found here: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Statistics-definitions.html
+
+
+### A list of vendor clients libraries used in this package
+| Name                	 | Client package             	| Version 	| NPM Link                                                     	      |
+|-----------------------|----------------------------	|---------	|---------------------------------------------------------------------|
+| AWS Cloud Watch 	     | @aws-sdk/client-cloudwatch 	| 3.245.0 	| [Link](https://www.npmjs.com/package/@aws-sdk/client-cloudwatch) 	    |
+| Data Dog        	     | hot-shots                  	| 9.3.0   	| [Link](https://www.npmjs.com/package/hot-shots])                  	 |
+| Prometheus      	     | prom-client                	| 14.1.1  	| [Link](https://www.npmjs.com/package/prom-client])                	 |
+
+
+### A list of nodeamf's custom parameters for vendors that can be passed together with config specific for a client 
+| Vendor          	| Parameter    	| Type   	| Description                                                                                                      	|
+|-----------------	|--------------	|--------	|------------------------------------------------------------------------------------------------------------------	|
+| AWS Cloud Watch 	| name         	| string 	| used to register vendors under a specific name, default: "cloudWatch"                                            	|
+|                 	| flushTimeout 	| number 	| number of milliseconds between calls to AWS API, has a direct connection with metrics resolution, default:60000  	|
+|                 	| bufferSize   	| number 	| maximum buffer size that holds metrics + dimensions (tags) as a unique key, default: 1000                        	|
+|                 	| namespace    	| string 	| a namespace under which metrics will be stored, default: 'DEFAULT'                                               	|
+| Data Dog        	| name         	| string 	| used to register vendors under a specific name, default: "dogStatsD"                                             	|
+| Prometheus      	| name         	| string 	| used to register vendors under a specific name, default: "prometheus"                                            	|
+
+## Other setup examples
 #### Setup with multiple metrics and vendors
 
 ```typescript
@@ -157,6 +194,7 @@ const nodeAmf = NodeAmf.init({
 ```
 
 ## More examples
+
 More examples can be found [here](https://github.com/wojbach/nodeamf/tree/master/examples) including e2e cases.
 
 ## Stay in touch

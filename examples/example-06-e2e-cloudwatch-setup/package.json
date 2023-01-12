@@ -1,17 +1,17 @@
 {
-  "name": "example-04-e2e-prometheus-setup",
+  "name": "example-06-e2e-cloudwatch-setup",
   "version": "1.0.0",
   "description": "",
   "main": "app.ts",
   "scripts": {
     "start": "ts-node app.ts",
-    "start-docker": "cd ./docker && docker-compose -p example-04-e2e-prometheus-setup up -d",
-    "stop-docker": "cd ./docker && docker-compose -p example-04-e2e-prometheus-setup down"
+    "start-docker": "cd ./docker && docker-compose -p example-06-e2e-cloudwatch-setup up -d",
+    "stop-docker": "cd ./docker && docker-compose -p example-06-e2e-cloudwatch-setup down"
   },
   "author": "wojbach",
   "license": "ISC",
   "dependencies": {
-    "@wojbach/nodeamf": "^1.0.1",
+    "@wojbach/nodeamf": "^1.0.6",
     "ts-node": "^10.0.0"
   },
   "devDependencies": {
