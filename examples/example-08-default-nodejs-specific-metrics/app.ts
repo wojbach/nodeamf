@@ -4,7 +4,7 @@ import {
   NodeAmf,
   Prometheus,
   SupportedVendorsEnum
-} from '../../src';
+} from '@wojbach/nodeamf';
 
 // Prometheus example
 const nodeAmfPrometheus = NodeAmf.init({

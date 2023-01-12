@@ -12,3 +12,4 @@ export * from './lib/vendors/supported-vendors.enum';
 export * from './lib/vendors/vendor.interface';
 export * from './lib/vendors/implementations/dog-statsd';
 export * from './lib/vendors/implementations/prometheus';
+export * from './lib/vendors/implementations/cloud-watch';

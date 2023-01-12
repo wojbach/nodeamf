@@ -39,11 +39,11 @@
     "prepare-release": "run-s reset-hard test cov:check doc:html version doc:publish"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   },
   "dependencies": {
+    "@aws-sdk/client-cloudwatch": "^3.245.0",
     "hot-shots": "^9.0.0",
-    "nflx-spectator": "^1.0.0",
     "prom-client": "^14.0.1"
   },
   "devDependencies": {

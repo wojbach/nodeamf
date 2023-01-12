@@ -4,10 +4,7 @@ import { MetricsTypesEnum } from '../metrics-types.enum';
 
 export type HistogramOptions = {
   tags?: string[];
-  /**
-   * Only for prometheus
-   */
-  buckets?: number[];
+  buckets?: number[]; //only supported in prometheus
 };
 
 export class Histogram
